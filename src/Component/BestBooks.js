@@ -23,10 +23,11 @@ export class BestBooks extends React.Component {
             UpdateStatusBook: '',
             showUpdateModel: false,
             updateIndx: 0,
+            REACT_APP_SERVER_URL : process.env.REACT_APP_SERVER_URL
         }
     }
     componentDidMount = () => {
-        axios.get(`http://localhost:3200/book?email=mohammadnoormjk1998@gmail.com`).then((bookData) => {
+        axios.get(`${this.state.REACT_APP_SERVER_URL}/book?email=mohammadnoormjk1998@gmail.com`).then((bookData) => {
             console.log(bookData);
             this.setState({
                 NumberBook: bookData.data.length,
@@ -77,7 +78,7 @@ export class BestBooks extends React.Component {
             statusBook: this.state.statusBook
         }
 
-        axios.post(`http://localhost:3200/books`, reqBody).then(response => {
+        axios.post(`${this.state.REACT_APP_SERVER_URL}/books`, reqBody).then(response => {
             this.setState({
                 DataOfBook: response.data
             })
@@ -96,7 +97,7 @@ export class BestBooks extends React.Component {
             statusBook: this.state.UpdateStatusBook
         }
 
-        axios.put(`http://localhost:3200/book/${this.state.updateIndx}`, reqBody).then(response => {
+        axios.put(`${this.state.REACT_APP_SERVER_URL}/book/${this.state.updateIndx}`, reqBody).then(response => {
             console.log('post data', response);
             this.setState({
                 DataOfBook: response.data,
@@ -110,7 +111,7 @@ export class BestBooks extends React.Component {
 
     deleteBook = (indx) => {
 
-        axios.delete(`http://localhost:3200/books/${this.state.DataOfBook[indx]._id}?email=mohammadnoormjk1998@gmail.com`).then((bookData) => {
+        axios.delete(`${this.state.REACT_APP_SERVER_URL}/books/${this.state.DataOfBook[indx]._id}?email=mohammadnoormjk1998@gmail.com`).then((bookData) => {
             this.setState({
                 DataOfBook: bookData.data,
                 showUpdateModel: false
