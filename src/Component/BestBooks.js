@@ -70,14 +70,13 @@ export class BestBooks extends React.Component {
 
     deleteBook = (indx) => {
 
-        console.log(1);
-        // axios.delete(`http://localhost:3200/books/${this.state.DataOfBook[indx]._id}?email=mohammadnoormjk1998@gmail.com`).then((bookData) => {
-        //     console.log(bookData);
-        //     this.setState({
-        //         NumberBook: bookData.data.length,
-        //         DataOfBook: bookData.data
-        //     })
-        // })
+        axios.delete(`http://localhost:3200/books/${this.state.DataOfBook[indx]._id}?email=mohammadnoormjk1998@gmail.com`).then((bookData) => {
+            this.setState({
+                DataOfBook: bookData.data
+            })
+        }).catch(error =>
+            alert(error.message)
+        )
     }
 
 
@@ -97,7 +96,7 @@ export class BestBooks extends React.Component {
 
                                 <p>{value.status}</p>
                             </>
-                            {<Button variant="secondary" onClick={this.deleteBook(indx)}>delete</Button>}
+                            {<Button variant="secondary" onClick={() => this.deleteBook(indx)}>delete</Button>}
 
                         </>
                     )}
