@@ -4,6 +4,7 @@ import axios from 'axios';
 // import Carousel from 'react-bootstrap/Carousel'
 import BookFormModal from './BookFormModal'
 import Button from 'react-bootstrap/Button'
+import UpdateBookForm from './UpdateBookForm'
 
 export class BestBooks extends React.Component {
 
@@ -16,8 +17,12 @@ export class BestBooks extends React.Component {
             nameBook: '',
             descriptionBook: '',
             statusBook: '',
-            userEmail: 'mohammadnoormjk1998@gmail.com'
-
+            userEmail: 'mohammadnoormjk1998@gmail.com',
+            UpdateNameBook: '',
+            UpdateDescriptionBook: '',
+            UpdateStatusBook: '',
+            showUpdateModel: false,
+            updateIndx: 0,
         }
     }
     componentDidMount = () => {
@@ -34,19 +39,34 @@ export class BestBooks extends React.Component {
         this.setState({
             showCreatModel: true
         })
-        console.log(this.state.nameBook);
     }
     closeForm = () => {
         this.setState({
             showCreatModel: false
         })
-        console.log(this.state.nameBook);
+    }
+
+
+
+    openUpdateForm = (indx) => {
+        this.setState({
+            showUpdateModel: true,
+            updateIndx: indx
+        })
+    }
+    closeUpdateForm = () => {
+        this.setState({
+            showUpdateModel: false
+        })
     }
 
     nameBook = (nameBook) => this.setState({ nameBook });
     descriptionBook = (descriptionBook) => this.setState({ descriptionBook });
     statusBook = (statusBook) => this.setState({ statusBook });
 
+    UpdateNameBook = (UpdateNameBook) => this.setState({ UpdateNameBook });
+    UpdateDescriptionBook = (UpdateDescriptionBook) => this.setState({ UpdateDescriptionBook });
+    UpdateStatusBook = (UpdateStatusBook) => this.setState({ UpdateStatusBook });
 
     createBook = (e) => {
         e.preventDefault()
@@ -58,9 +78,29 @@ export class BestBooks extends React.Component {
         }
 
         axios.post(`http://localhost:3200/books`, reqBody).then(response => {
-            console.log('post data', response);
             this.setState({
                 DataOfBook: response.data
+            })
+        }).catch(error =>
+            alert(error.message)
+        )
+
+    }
+    UpdateBookForm = (e) => {
+
+        e.preventDefault()
+        const reqBody = {
+            userEmail: this.state.userEmail,
+            nameBook: this.state.UpdateNameBook,
+            descriptionBook: this.state.UpdateDescriptionBook,
+            statusBook: this.state.UpdateStatusBook
+        }
+
+        axios.put(`http://localhost:3200/book/${this.state.updateIndx}`, reqBody).then(response => {
+            console.log('post data', response);
+            this.setState({
+                DataOfBook: response.data,
+                showUpdateModel: false
             })
         }).catch(error =>
             alert(error.message)
@@ -72,7 +112,8 @@ export class BestBooks extends React.Component {
 
         axios.delete(`http://localhost:3200/books/${this.state.DataOfBook[indx]._id}?email=mohammadnoormjk1998@gmail.com`).then((bookData) => {
             this.setState({
-                DataOfBook: bookData.data
+                DataOfBook: bookData.data,
+                showUpdateModel: false
             })
         }).catch(error =>
             alert(error.message)
@@ -97,6 +138,7 @@ export class BestBooks extends React.Component {
                                 <p>{value.status}</p>
                             </>
                             {<Button variant="secondary" onClick={() => this.deleteBook(indx)}>delete</Button>}
+                            {<Button variant="secondary" onClick={() => this.openUpdateForm(indx)}>Update Book</Button>}
 
                         </>
                     )}
@@ -108,7 +150,16 @@ export class BestBooks extends React.Component {
                             statusBook={this.statusBook}
                             createBook={this.createBook}
                         />
+
                     </>
+                }
+                {this.state.showUpdateModel &&
+                    <UpdateBookForm closeUpdateForm={this.closeUpdateForm}
+                        UpdateNameBook={this.UpdateNameBook}
+                        UpdateDescriptionBook={this.UpdateDescriptionBook}
+                        UpdateStatusBook={this.UpdateStatusBook}
+                        UpdateBookForm={this.UpdateBookForm}
+                    />
                 }
 
                 <Button variant="secondary" onClick={this.openForm}>Add Book</Button>
